@@ -16,7 +16,7 @@ ActiveRecord::Schema.define(version: 20160110181649) do
   create_table "events", force: :cascade do |t|
     t.datetime "date",       null: false
     t.string   "user",       null: false
-    t.string   "type",       null: false
+    t.string   "type_of",    null: false
     t.string   "message"
     t.string   "otheruser"
     t.datetime "created_at", null: false
