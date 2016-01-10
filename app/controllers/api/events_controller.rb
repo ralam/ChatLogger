@@ -19,11 +19,10 @@ class Api::EventsController < ApplicationController
   def index
     if query_params[:from] && query_params[:to]
       from_date = DateTime.strptime(query_params[:from], "%FT%RZ")
-      to_date = DateTime.strptime(query_params[:from], "%FT%RZ")
+      to_date = DateTime.strptime(query_params[:to], "%FT%RZ")
       @events = Event.where("date > ? AND date < ?", from_date, to_date)
     elsif query_params[:from]
       from_date = DateTime.strptime(query_params[:from], "%FT%RZ")
-      debugger
       @events = Event.where("date > ?", from_date)
     elsif query_params[:to]
       to_date = DateTime.strptime(query_params[:to], "%FT%RZ")
