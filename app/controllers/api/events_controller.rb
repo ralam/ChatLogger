@@ -17,12 +17,20 @@ class Api::EventsController < ApplicationController
   end
 
   def index
-    query_params = query_params
-    if query_params
-      @events = Event.where("date: > ? AND date: < ?", query_params[:from], query_params[:to])
+    if query_params[:from] && query_params[:to]
+      from_date = Date.strptime(query_params[:from], "%FT%RZ")
+      to_date = Date.strptime(query_params[:from], "%FT%RZ")
+      @events = Event.where("date > ? AND date < ?", from_date, to_date)
+    elsif query_params[:from]
+      from_date = Date.strptime(query_params[:from], "%FT%RZ")
+      @events = Event.where("date > ?", from_date)
+    elsif query_params[:to]
+      to_date = Date.strptime(query_params[:to], "%FT%RZ")
+      @events = Event.where("date < ?", to_date)
     else
       @events = Event.all
     end
+    
     if @events
       render :json => @events, status: 200
     else
@@ -37,6 +45,6 @@ class Api::EventsController < ApplicationController
   end
 
   def query_params
-    params.require(:event).permit(:from, :to)
+    params.permit(:from, :to)
   end
 end
