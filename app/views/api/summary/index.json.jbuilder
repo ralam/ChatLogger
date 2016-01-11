@@ -26,10 +26,15 @@ def count_freq(event, freq_hash)
   freq_hash
 end
 
+def add_last_interval(current_time, freq_hash, intervals)
+  freq_hash[:date] = current_time
+  intervals << freq_hash
+end
+
 counts = generate_freq_hash
 if @interval
   intervals = []
-  @events.order(:date)
+  @events.order!(date: :asc)
   if @interval == 'minute'
     current_time = @events[0].date
     @events.each do |event|
