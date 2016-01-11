@@ -41,7 +41,7 @@ class Api::EventsController < ApplicationController
   private
 
   def event_params
-    params.require(:event).permit(:date, :user, :message, :otheruser, :type)
+    params.slice(:date, :user, :message, :otheruser, :type)
   end
 
   def query_params

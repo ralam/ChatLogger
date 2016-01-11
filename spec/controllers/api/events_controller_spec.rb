@@ -7,7 +7,9 @@ RSpec.describe Api::EventsController, type: :controller do
 
   describe "GET index" do
     before(:each) do
-      5.times {create(:event)}
+      3.times {create(:event, date: DateTime.new(2014, 2, 28, 1, 1))}
+      create(:event, date: DateTime.new(2014, 2, 28, 1, 3))
+      create(:event, date: Faker::Time.forward(5))
       get :index, format: :json
     end
 
@@ -21,6 +23,23 @@ RSpec.describe Api::EventsController, type: :controller do
 
     it "fetches all of the events" do
       expect(JSON.parse(response.body).length).to eq(5)
+    end
+
+    describe "query params" do
+      it "filters by from date" do
+        get :index, format: :json, from: '2015-02-28T13:01Z'
+        expect(JSON.parse(response.body).length).to eq(1)
+      end
+
+      it "filters by to date" do
+        get :index, format: :json, to: '2014-02-28T13:01Z'
+        expect(JSON.parse(response.body).length).to eq(4)
+      end
+
+      it 'filters with both from and to date' do
+        get :index, format: :json, from: '2014-02-28T00:59Z', to: '2014-02-28T01:02Z'
+        expect(JSON.parse(response.body).length).to eq(3)
+      end
     end
   end
 end
