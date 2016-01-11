@@ -42,4 +42,23 @@ RSpec.describe Api::EventsController, type: :controller do
       end
     end
   end
+
+  describe "POST index" do
+    it "creates a valid event" do
+      get :index, format: :json
+      expect(JSON.parse(response.body).length).to eq(0)
+      post :create, format: :json, date: "2014-02-28T13:02Z", user: "Alice", type: "highfive", otheruser: "Bob"
+      expect(response.status).to eq(200)
+      expect(response.content_type).to eq("application/json")
+      get :index, format: :json
+      expect(JSON.parse(response.body).length).to eq(1)
+    end
+
+    it "throws an error for an invalid event" do
+      post :create, format: :json, date: "2014-02-28T13:02Z", type: "highfive", otheruser: "Bob"
+      expect(response.status).to eq(422)
+      get :index, format: :json
+      expect(JSON.parse(response.body).length).to eq(0)
+    end
+  end
 end

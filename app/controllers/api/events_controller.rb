@@ -1,17 +1,22 @@
 class Api::EventsController < ApplicationController
 
   def create
-    # cannot use 'type' as a field name in Rails, so have to create the event object manually
-    @event = Event.new
-    @event.date = DateTime.strptime(event_params[:date], "%FT%RZ")
-    @event.user = event_params[:user]
-    @event.message = event_params[:message]
-    @event.otheruser = event_params[:otheruser]
-    @event.type_of = event_params[:type]
+    begin
+      # cannot use 'type' as a field name in Rails, so have to create the event object manually
+      # use rescue block to return status 422 if error parsing params
+      @event = Event.new
+      @event.date = DateTime.strptime(event_params[:date], "%FT%RZ")
+      @event.user = event_params[:user]
+      @event.message = event_params[:message]
+      @event.otheruser = event_params[:otheruser]
+      @event.type_of = event_params[:type]
 
-    if @event.save
-      render :json => "status: ok", status: 200
-    else
+      if @event.save
+        render :json => "status: ok", status: 200
+      else
+        render :json => @event.errors.full_messages, status: 422
+      end
+    rescue
       render :json => @event.errors.full_messages, status: 422
     end
   end
