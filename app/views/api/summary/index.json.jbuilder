@@ -110,7 +110,7 @@ if @interval
       end
     end
   end
-  json.data intervals
+  json.array! intervals
 else
   @events.each do |event|
     counts = count_freq(event, counts)

@@ -43,7 +43,7 @@ RSpec.describe Api::EventsController, type: :controller do
     end
   end
 
-  describe "POST index" do
+  describe "POST create" do
     it "creates a valid event" do
       get :index, format: :json
       expect(JSON.parse(response.body).length).to eq(0)
