@@ -1,5 +1,5 @@
 # ChatLogger
-A simple chat logging API built using Rails and postgreSQL. To run the server locally, clone this repo, run `bundle install`, and then run `bundle install`.
+A simple chat logging API built using Rails and postgreSQL. To run the server locally, clone this repo, run `bundle install`, and then run `rails s`.
 
 The events controller supports GET requests to /events with these optional params:
 - from (as YYYY-MM-DDTHH:MMZ)
