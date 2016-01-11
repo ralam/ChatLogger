@@ -36,6 +36,7 @@ if @interval
   intervals = []
   @events.order!(date: :asc)
   if @interval == 'minute'
+
     current_time = @events[0].date
     @events.each do |event|
       if current_time < event.date
@@ -47,8 +48,7 @@ if @interval
 
       counts = count_freq(event, counts)
     end
-    counts[:date] = current_time
-    intervals << counts
+    intervals = add_last_interval(current_time, counts, intervals)
   elsif @interval == 'hour'
     current_time = @events[0].date
     current_time.change({minutes: 0})
@@ -62,8 +62,7 @@ if @interval
 
       counts = count_freq(event, counts)
     end
-    counts[:date] = current_time
-    intervals << counts
+    intervals = add_last_interval(current_time, counts, intervals)
   elsif @interval == 'day'
     current_time = @events[0].date
     current_time = current_time.beginning_of_day
@@ -77,10 +76,8 @@ if @interval
 
       counts = count_freq(event, counts)
     end
-    counts[:date] = current_time
-    intervals << counts
+    intervals = add_last_interval(current_time, counts, intervals)
   end
-
   json.data intervals
 else
   @events.each do |event|
