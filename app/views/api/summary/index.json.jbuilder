@@ -11,6 +11,8 @@ def generate_freq_hash
   counts
 end
 
+#helper method used to increment frequency hash
+
 def count_freq(event, freq_hash)
   action = event.type_of
   if action == "enter"
@@ -26,10 +28,14 @@ def count_freq(event, freq_hash)
   freq_hash
 end
 
+#helper method used to add last interval data
+
 def add_last_interval(current_time, freq_hash, intervals)
   freq_hash[:date] = current_time
   intervals << freq_hash
 end
+
+#main view
 
 counts = generate_freq_hash
 if @interval
