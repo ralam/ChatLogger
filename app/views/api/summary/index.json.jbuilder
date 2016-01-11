@@ -11,9 +11,23 @@ def generate_freq_hash
   counts
 end
 
+def count_freq(event, freq_hash)
+  action = event.type_of
+  if action == "enter"
+    freq_hash[:enters] += 1
+  elsif action == "leave"
+    freq_hash[:leaves] += 1
+  elsif action == "comment"
+    freq_hash[:comments] += 1
+  elsif action == "highfive"
+    freq_hash[:highfives] += 1
+  end
+
+  freq_hash
+end
+
 counts = generate_freq_hash
 if @interval
-  json.lol "asdf"
   intervals = []
   @events.order(:date)
   if @interval == 'minute'
@@ -26,16 +40,7 @@ if @interval
         current_time += 1.minutes
       end
 
-      action = event.type_of
-      if action == "enter"
-        counts[:enters] += 1
-      elsif action == "leave"
-        counts[:leaves] += 1
-      elsif action == "comment"
-        counts[:comments] += 1
-      elsif action == "highfive"
-        counts[:highfives] += 1
-      end
+      counts = count_freq(event, counts)
     end
     counts[:date] = current_time
     intervals << counts
@@ -50,16 +55,7 @@ if @interval
         current_time += 1.hours
       end
 
-      action = event.type_of
-      if action == "enter"
-        counts[:enters] += 1
-      elsif action == "leave"
-        counts[:leaves] += 1
-      elsif action == "comment"
-        counts[:comments] += 1
-      elsif action == "highfive"
-        counts[:highfives] += 1
-      end
+      counts = count_freq(event, counts)
     end
     counts[:date] = current_time
     intervals << counts
@@ -74,16 +70,7 @@ if @interval
         current_time += 1.days
       end
 
-      action = event.type_of
-      if action == "enter"
-        counts[:enters] += 1
-      elsif action == "leave"
-        counts[:leaves] += 1
-      elsif action == "comment"
-        counts[:comments] += 1
-      elsif action == "highfive"
-        counts[:highfives] += 1
-      end
+      counts = count_freq(event, counts)
     end
     counts[:date] = current_time
     intervals << counts
@@ -92,16 +79,7 @@ if @interval
   json.data intervals
 else
   @events.each do |event|
-    action = event.type_of
-    if action == "enter"
-      counts[:enters] += 1
-    elsif action == "leave"
-      counts[:leaves] += 1
-    elsif action == "comment"
-      counts[:comments] += 1
-    elsif action == "highfive"
-      counts[:highfives] += 1
-    end
+    counts = count_freq(event, counts)
   end
 
   json.enters counts[:enters]
