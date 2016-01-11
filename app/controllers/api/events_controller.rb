@@ -1,7 +1,7 @@
 class Api::EventsController < ApplicationController
 
   def create
-    # cannot use type as a field name in Rails, so have to create the event object manually
+    # cannot use 'type' as a field name in Rails, so have to create the event object manually
     @event = Event.new
     @event.date = DateTime.strptime(event_params[:date], "%FT%RZ")
     @event.user = event_params[:user]
