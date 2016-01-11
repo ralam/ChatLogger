@@ -44,8 +44,9 @@ if @interval
   if @interval == 'minute'
 
     current_time = @events[0].date
+    current_time.change({seconds: 0})
     @events.each do |event|
-      if current_time < event.date
+      while current_time < event.date
         counts[:date] = current_time
         intervals << counts
         counts = generate_freq_hash
@@ -55,11 +56,19 @@ if @interval
       counts = count_freq(event, counts)
     end
     intervals = add_last_interval(current_time, counts, intervals)
+    if @to_date
+      while current_time < @to_date
+        counts = generate_freq_hash
+        current_time += 1.minutes
+        counts[:date] = current_time
+        intervals << counts
+      end
+    end
   elsif @interval == 'hour'
     current_time = @events[0].date
     current_time.change({minutes: 0})
     @events.each do |event|
-      if current_time + 1.hours <= event.date
+      while current_time + 1.hours <= event.date
         counts[:date] = current_time
         intervals << counts
         counts = generate_freq_hash
@@ -67,13 +76,21 @@ if @interval
       end
 
       counts = count_freq(event, counts)
+      if @to_date
+        while current_time < @to_date
+          counts = generate_freq_hash
+          current_time += 1.hours
+          counts[:date] = current_time
+          intervals << counts
+        end
+      end
     end
     intervals = add_last_interval(current_time, counts, intervals)
   elsif @interval == 'day'
     current_time = @events[0].date
     current_time = current_time.beginning_of_day
     @events.each do |event|
-      if current_time + 1.days <= event.date
+      while current_time + 1.days <= event.date
         counts[:date] = current_time
         intervals << counts
         counts = generate_freq_hash
@@ -82,7 +99,16 @@ if @interval
 
       counts = count_freq(event, counts)
     end
+
     intervals = add_last_interval(current_time, counts, intervals)
+    if @to_date
+      while current_time < @to_date
+        counts = generate_freq_hash
+        current_time += 1.days
+        counts[:date] = current_time
+        intervals << counts
+      end
+    end
   end
   json.data intervals
 else
